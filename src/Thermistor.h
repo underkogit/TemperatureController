@@ -14,7 +14,7 @@ private:
     float nominalResistance;
     float bCoefficient;
     float temperatureNominal;
-    float temperatureNominal;
+    
 public:
     float temperature;
     float last_temperature;
