@@ -26,9 +26,10 @@ void setup()
   pinMode(BTN_UP, INPUT_PULLUP);
   pinMode(BTN_DOWN, INPUT_PULLUP);
 
+  pinMode(RELAY1, OUTPUT);
+  digitalWrite(RELAY1, HIGH);
+
   analogReference(DEFAULT);
-  pinMode(RELAY_PIN, OUTPUT);
-  digitalWrite(RELAY_PIN, LOW);
 
   disp.begin();
   disp.clearScreen();
@@ -64,31 +65,33 @@ void view_ui()
 void loop()
 {
 
-  bool up = !digitalRead(BTN_UP);
-  bool down = !digitalRead(BTN_DOWN);
   if (millis() - lastTempUpdate > 100)
   {
+    bool up = !digitalRead(BTN_UP);
+    bool down = !digitalRead(BTN_DOWN);
     lastTempUpdate = millis();
     temperature = th.readTemperature();
 
     if (up)
     {
-      addToMax(10);
+      addToMax(APPEND_VALUE);
     }
 
     if (down)
     {
-      addToMax(-10);
+      addToMax(-APPEND_VALUE);
     }
 
-    if (abs(temperature - th.last_temperature) > 0.2)
+    if (abs(temperature - th.last_temperature) > TEMPERATURE_UPDATE)
     {
       th.last_temperature = temperature;
       isUpdateUI = true;
     }
     if (max_temperature > 0)
-      isFire = max_temperature > temperature ;
+      isFire = max_temperature > temperature;
   }
+
+  digitalWrite(RELAY1, isFire ? LOW : HIGH);
 
   if (isUpdateUI)
   {
